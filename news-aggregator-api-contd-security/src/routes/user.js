@@ -4,7 +4,7 @@ const userData = require("../db/user-db.json");
 const { filterData } = require("../helpers/filterData");
 const { updateNewsPreferences } = require("../helpers/updateUser");
 const { register, login } = require("../controllers/authController");
-const { sanitizeData, sanitizeUserPrefs } = require('../validators/inputValidator');
+const { sanitizeData, sanitizeUserPrefs, queryParamsValidator } = require('../validators/inputValidator');
 
 userRoutes.use(express.json());
 userRoutes.use(express.urlencoded({ extended: true }));
@@ -57,8 +57,19 @@ userRoutes.get("/preferences/:id", (req, res) => {
  * body :  "news_preferences":"news_Preference"
  */
 userRoutes.put("/preferences/:id", (req, res) => {
+
+  let userParams = queryParamsValidator(req.params.id, "string");
+  
+  if(!userParams.status){
+    return res.status(500).send({
+      error: "Error",
+      message: userParams.message
+    })
+  }
+
+
   let santizedData = sanitizeUserPrefs(req.body);
-  console.log(santizedData);
+  // console.log(santizedData);
 
   if(!santizedData.status){
     return res.status(500).send({

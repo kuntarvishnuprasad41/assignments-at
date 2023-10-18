@@ -4,6 +4,10 @@ function containsSpecialChars(str) {
     return specialChars.test(str);
 }
 
+function uuidContainsSpecialChars(str) {
+    const specialChars = /[`!@#$%^&*()_+\=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
+}
 function sanitize(string) {
     const map = {
         '&': '&amp;',
@@ -74,6 +78,27 @@ function sanitizeUserPrefs(data) {
     }
 }
 
+function queryParamsValidator(queryParam, type){
+    
+    if(uuidContainsSpecialChars(queryParam)){
+        return {
+            status :false,
+            message: "Cannot contain special characters"
+        };
+    }else if(typeof queryParam != type){
+        return {
+            status:false,
+            message : `${type} expected in request param`
+        };
+    }
+    else{
+        return {
+            status :true,
+            message:"All right"
+        };
+    }
+}
 
 
-module.exports = { sanitizeData, sanitizeUserPrefs };
+
+module.exports = { sanitizeData, sanitizeUserPrefs , queryParamsValidator};

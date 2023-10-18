@@ -30,6 +30,14 @@ newsRoutes.get("/", (req,res)=>{
  */
 
 newsRoutes.get('/',(req,res)=>{
+  let userParams = queryParamsValidator(req.query.userId, "string");
+  
+  if(!userParams.status){
+    return res.status(500).send({
+      error: "Error",
+      message: userParams.message
+    })
+  }
   let userpref = getUserPrefs(req.query.userId)
   if(userpref.status){
     res.status(200).send(userpref.message);
@@ -45,6 +53,16 @@ newsRoutes.get('/',(req,res)=>{
  * Endpoint :/api/news/search/keyword to search
  */
 newsRoutes.get("/search/:keyword", async (req, res) => {
+
+  let userParams = queryParamsValidator(req.params.keyword, "string");
+  
+  if(!userParams.status){
+    return res.status(500).send({
+      error: "Error",
+      message: userParams.message
+    })
+  }
+
     let payload = {
       page: 1,
       q: req.params.keyword,
@@ -65,6 +83,17 @@ newsRoutes.get("/search/:keyword", async (req, res) => {
  * Endpoint :/api/news/category/categoryName
  */
 newsRoutes.get("/category/:category", async (req, res) => {
+
+  let userParams = queryParamsValidator(req.params.category, "string");
+  
+  if(!userParams.status){
+    return res.status(500).send({
+      error: "Error",
+      message: userParams.message
+    })
+  }
+
+
   let payload = {
     page: 1,
     category: req.params.category,
@@ -125,6 +154,16 @@ newsRoutes.get("/favorite", (req, res) => {
  * pass newsId in request param
  */
 newsRoutes.post("/:id/read", (req, res) => {
+
+  let userParams = queryParamsValidator(req.params.id, "string");
+  
+  if(!userParams.status){
+    return res.status(500).send({
+      error: "Error",
+      message: userParams.message
+    })
+  }
+
   let result = readNews(req.body.user_id, req.params.id);
   if (result.status) {
     res.status(200).send({ message: "user updated successfully" });
@@ -140,6 +179,14 @@ newsRoutes.post("/:id/read", (req, res) => {
  * pass newsId in request param
  */
 newsRoutes.post("/:id/favorite", (req, res) => {
+  let userParams = queryParamsValidator(req.params.id, "string");
+  
+  if(!userParams.status){
+    return res.status(500).send({
+      error: "Error",
+      message: userParams.message
+    })
+  }
   let result = markNewsFavorite(req.params.id, req.body.user_id);
   if (result.status) {
     res.status(200).send({ message: "user updated successfully" });
